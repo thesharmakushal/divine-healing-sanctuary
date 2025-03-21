@@ -1,0 +1,1 @@
+/* Healing Tools page code */

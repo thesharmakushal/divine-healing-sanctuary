@@ -1,0 +1,1 @@
+/* The Mandala page code */

@@ -1,0 +1,1 @@
+/* Divine Search page code */
