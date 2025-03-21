@@ -1,30 +1,34 @@
-/* DeepSeek API backend route code */
-// /pages/api/deepseek.ts
-export default async function handler(req, res) {
-    if (req.method !== 'POST') {
-      return res.status(405).json({ error: 'Only POST requests allowed' });
-    }
-  
-    const { messages } = req.body;
-  
-    try {
-      const response = await fetch("https://api.deepseek.com/chat/completions", {
-        method: "POST",
-        headers: {
-          "Authorization": `Bearer ${process.env.NEXT_PUBLIC_DEEPSEEK_API_KEY}`,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          model: "deepseek-chat",
-          messages,
-        }),
-      });
-  
-      const data = await response.json();
-      res.status(200).json(data);
-    } catch (err) {
-      console.error("DeepSeek API error:", err);
-      res.status(500).json({ error: "Something went wrong." });
-    }
+import type { NextApiRequest, NextApiResponse } from "next";
+
+export default async function handler(
+  req: NextApiRequest,
+  res: NextApiResponse
+) {
+  if (req.method !== "POST") {
+    return res.status(405).json({ error: "Method not allowed" });
   }
-  
+
+  const { messages } = req.body;
+
+  try {
+    const response = await fetch("https://api.openai.com/v1/chat/completions", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        // Ensure you set NEXT_PUBLIC_OPENAI_API_KEY in your environment variables
+        "Authorization": `Bearer ${process.env.NEXT_PUBLIC_OPENAI_API_KEY}`,
+      },
+      body: JSON.stringify({
+        model: "gpt-4o-mini",
+        store: true,
+        messages,
+      }),
+    });
+
+    const data = await response.json();
+    res.status(200).json(data);
+  } catch (error) {
+    console.error("OpenAI API error:", error);
+    res.status(500).json({ error: "Something went wrong." });
+  }
+}
